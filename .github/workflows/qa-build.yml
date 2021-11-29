@@ -1,0 +1,42 @@
+name: QA Environment Builder
+on:
+  workflow_dispatch:
+      inputs:
+        userEmail:
+          description: 'User Email'     
+          required: true
+          default: 'sampath@lightful.com'
+    
+jobs:
+  setup-org:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        ref: 'main'
+        fetch-depth: 20
+
+    # Installs Salesforce CLi
+    - name: Install Salesforce CLI
+      run: |
+        wget https://developer.salesforce.com/media/salesforce-cli/sfdx-cli/channels/stable/sfdx-cli-linux-x64.tar.xz
+        mkdir sfdx
+        tar xJf sfdx-cli-linux-x64.tar.xz -C sfdx --strip-components 1
+        ./sfdx/install
+        sfdx --version
+        
+    - name: Authenticate to Dev Hub org
+      run: |
+        echo "${{secrets.SFL_SECRET_KEY}}" | base64 -d > server.key 
+        sfdx auth:jwt:grant -u ${{secrets.SFL_USERNAME}} -f server.key -i ${{secrets.SFL_CONSUMER_KEY}} -r https://login.salesforce.com
+        sfdx config:set defaultdevhubusername=${{secrets.SFL_USERNAME}}
+        
+        
+    - name: Create scratch org 
+      run: |
+        sfdx force:org:create -f config/project-scratch-def.json -a qa-org -d 1 -s     
+        sfdx force:source:push
+        sfdx force:user:permset:assign --permsetname GIFter
+        sfdx force:org:open --path lightning/n/GIFter
+
+        

@@ -1,0 +1,67 @@
+name: Pacakge Beta Generator
+on:
+  workflow_dispatch:
+      inputs:
+        userEmail:
+          description: 'User Email'     
+          required: true
+          default: 'sampath@lightful.com'
+        PackageKey:
+          description: 'Package Installation Key'     
+          required: true
+          default: 'test1234'
+    
+jobs:
+  setup-org:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        ref: 'main'
+        fetch-depth: 20
+
+    # Installs Salesforce CLi
+    - name: Install Salesforce CLI
+      run: |
+        wget https://developer.salesforce.com/media/salesforce-cli/sfdx-cli/channels/stable/sfdx-cli-linux-x64.tar.xz
+        mkdir sfdx
+        tar xJf sfdx-cli-linux-x64.tar.xz -C sfdx --strip-components 1
+        ./sfdx/install
+        sfdx --version
+        
+    - name: Install jq
+      run: |
+        sudo apt-get install jq
+
+    - name: Authenticate to Dev Hub org
+      run: |
+        echo "${{secrets.SFL_SECRET_KEY}}" | base64 -d > server.key 
+        sfdx auth:jwt:grant -u ${{secrets.SFL_USERNAME}} -f server.key -i ${{secrets.SFL_CONSUMER_KEY}} -r https://login.salesforce.com
+        sfdx config:set defaultdevhubusername=${{secrets.SFL_USERNAME}}
+    
+    - name: Create new version
+      run: |
+        sfdx force:package:version:create -x -p "GIFter" -k ${{ github.event.inputs.PackageKey }} -w 60 --codecoverage
+        new_version_id=$(grep -o "04t[[:alnum:]]\{15\}" sfdx-project.json | tail -n1)
+        echo "version_id=${new_version_id}" >> $GITHUB_ENV
+        
+
+    - name: Check code coverage
+      run: |
+        test $(sfdx force:package:version:report -p "$version_id" --json | jq .result.HasPassedCodeCoverageCheck) = 'true'
+    
+
+    - name: Store new version id
+      run: |
+        sed -i -e "s/04t[[:alnum:]]\{15\}/${version_id}/" README.md
+        git config user.name "release[bot]"
+        git config user.email "<>"
+        git add README.md
+        git add sfdx-project.json
+        git commit -m "Updating new pre-release version"
+        git push
+
+
+  
+
+

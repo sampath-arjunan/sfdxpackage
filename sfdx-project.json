@@ -1,0 +1,35 @@
+{
+    "packageDirectories": [
+        {
+            "path": "force-app",
+            "default": true,
+            "package": "GIFter",
+            "versionName": "Summer 1.8.0",
+            "versionNumber": "1.8.0.NEXT"
+        }
+    ],
+    "namespace": "",
+    "sfdcLoginUrl": "https://login.salesforce.com",
+    "sourceApiVersion": "50.0",
+    "packageAliases": {
+        "GIFter": "0Ho08000000sXuFCAU",
+        "GIFter@1.0.0-1": "04t08000000sySGAAY",
+        "GIFter@1.0.0-2": "04t08000000sySLAAY",
+        "GIFter@1.1.0-1": "04t08000000sySQAAY",
+        "GIFter@1.1.0-2": "04t08000000sySVAAY",
+        "GIFter@1.1.0-3": "04t08000000sySaAAI",
+        "GIFter@1.1.0-4": "04t08000000sySfAAI",
+        "GIFter@1.2.0-1": "04t08000000sySkAAI",
+        "GIFter@1.2.0-2": "04t08000000sySpAAI",
+        "GIFter@1.2.0-5": "04t08000000syTEAAY",
+        "GIFter@1.3.0-1": "04t08000000syTJAAY",
+        "GIFter@1.3.0-2": "04t08000000syTnAAI",
+        "GIFter@1.4.0-1": "04t08000000syTsAAI",
+        "GIFter@1.5.0-1": "04t08000000syVZAAY",
+        "GIFter@1.5.0-15": "04t08000000Y9MDAA0",
+        "GIFter@1.6.0-1": "04t08000000Y9MIAA0",
+        "GIFter@1.7.0-1": "04t08000000Y9MNAA0",
+        "GIFter@1.8.0-1": "04t08000000Y9MSAA0",
+        "GIFter@1.8.0-2": "04t08000000Y9MXAA0"
+    }
+}
