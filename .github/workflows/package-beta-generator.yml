@@ -5,11 +5,11 @@ on:
         userEmail:
           description: 'User Email'     
           required: true
-          default: 'sampath@lightful.com'
+          default: 'sampathsalesforce@gmail.com'
         PackageKey:
           description: 'Package Installation Key'     
           required: true
-          default: 'test1234'
+          default: 'test12345'
     
 jobs:
   setup-org:
@@ -35,8 +35,8 @@ jobs:
 
     - name: Authenticate to Dev Hub org
       run: |
-        echo "${{secrets.SFL_SECRET_KEY}}" | base64 -d > server.key 
-        sfdx auth:jwt:grant -u ${{secrets.SFL_USERNAME}} -f server.key -i ${{secrets.SFL_CONSUMER_KEY}} -r https://login.salesforce.com
+        echo "${{secrets.SF_SECRET_KEY}}" | base64 -d > server.key 
+        sfdx auth:jwt:grant -u ${{secrets.SF_USERNAME}} -f server.key -i ${{secrets.SF_CONSUMER_KEY}} -r https://login.salesforce.com
         sfdx config:set defaultdevhubusername=${{secrets.SFL_USERNAME}}
     
     - name: Create new version
